@@ -1,0 +1,54 @@
+<div class="layout">
+  <header class="topbar">
+    <div class="menu-button">
+      <p-button
+        icon="pi pi-bars"
+        [text]="true"
+        (click)="sidebarVisible.set(true)"
+      />
+    </div>
+    <span class="app-title">LabHub</span>
+  </header>
+
+
+  <p-drawer [(visible)]="sidebarVisible" [modal]="false">
+    <ng-template #header>
+      <span>LabHub</span>
+    </ng-template>
+    <nav class="sidebar-nav">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        (click)="sidebarVisible.set(false)"
+      >
+        <i class="pi pi-box"></i>
+        <span>Inventory</span>
+      </a>
+
+      <a
+        routerLink="/rooms"
+        routerLinkActive="active"
+        (click)="sidebarVisible.set(false)"
+      >
+        <i class="pi pi-building"></i>
+        <span>Rooms</span>
+      </a>
+
+      @if (isAdmin()) {
+        <a
+          routerLink="/admin"
+          routerLinkActive="active"
+          (click)="sidebarVisible.set(false)"
+        >
+          <i class="pi pi-users"></i>
+          <span>Admin</span>
+        </a>
+      }
+      <p-button (click)="logout()">Logout</p-button>
+    </nav>
+  </p-drawer>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

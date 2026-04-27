@@ -1,0 +1,90 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #0f0f0f;
+}
+
+.login-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+
+  h1 {
+    color: #ffffff;
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 0.85rem;
+    margin: 0 0 1.5rem 0;
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin: 0.8rem 0 0.8rem 0;
+  // covers both plain input and PrimeNG inputs
+  input,
+  input.p-inputtext,
+  input.p-password {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: none;
+    }
+
+    &::placeholder {
+      color: #444;
+    }
+  }
+}
+
+// PrimeNG button override
+p-button {
+  display: block;
+  width: 100%;
+
+  .p-button {
+    width: 100%;
+    background: #2563eb;
+    border-color: #2563eb;
+    padding: 0.7rem;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+  }
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin: 0 0 1rem 0;
+}

@@ -1,0 +1,126 @@
+<div class="dialog">
+  @if (mode() === 'edit') {
+    <form [formGroup]="form" class="form-group" (ngSubmit)="onSubmit()">
+      <div class="input-row">
+        <p-select
+          [options]="owners()"
+          optionLabel="name"
+          placeholder="Owner"
+          formControlName="owner"
+        >
+        </p-select>
+
+        <p-select
+          [options]="rooms()"
+          optionLabel="name"
+          placeholder="Room"
+          formControlName="room"
+        >
+        </p-select>
+
+        <p-select
+          [options]="possibleStorages()"
+          optionLabel="name"
+          placeholder="Storage"
+          formControlName="storage"
+        >
+        </p-select>
+      </div>
+
+      @if (itemType() === 'component') {
+        <div class="input-row" formGroupName="item_obj">
+          <p-select
+            [options]="componentTypes()"
+            optionLabel="name"
+            placeholder="Component Type"
+            formControlName="component_type"
+          >
+            <ng-template let-option pTemplate="item">
+              {{ formatLabel(option.name) }}
+            </ng-template>
+
+            <ng-template let-option pTemplate="selectedItem">
+              {{ formatLabel(option.name) }}
+            </ng-template>
+          </p-select>
+
+          <p-input-number
+            placeholder="Quantity"
+            formControlName="quantity"
+          ></p-input-number>
+          <div class="fields" formGroupName="attributes">
+            @for (
+              entry of objectEntries(form.get('item_obj.component_type')?.value?.fields ?? {});
+              track entry[0]
+            ) {
+              <p-floatlabel class="field-input">
+                @if (entry[1] === 'numeric') {
+                  <input
+                    pInputText
+                    [id]="entry[0]"
+                    [formControlName]="entry[0]"
+                    [invalid]="form.get('item_obj.attributes.' + entry[0])?.invalid && form.get('item_obj.attributes.' + entry[0])?.touched"
+                  />
+                } @else {
+                  <input
+                    pInputText
+                    [id]="entry[0]"
+                    [formControlName]="entry[0]"
+                  />
+                }
+                <label [for]="entry[0]">{{ formatLabel(entry[0]) }}</label>
+              </p-floatlabel>
+            }
+          </div>
+        </div>
+      } @else if (itemType() === 'asset') {
+        <span>W.I.P</span>
+      } @else {
+        <span>W.I.P</span>
+      }
+      <p-button type="submit">Submit</p-button>
+    </form>
+  } @else {
+    <div class="view-fields">
+      <div class="card">
+        <h2>Location</h2>
+        <div class="field">
+           <label>Owner: </label>
+           <span>{{ itemToView()?.owner?.name }}</span>
+         </div>
+         <div class="field">
+           <label>Room: </label>
+           <span>{{ itemToView()?.room?.name }}</span>
+         </div>
+         <div class="field">
+           <label>Storage: </label>
+           <span>{{ itemToView()?.storage?.name }}</span>
+         </div>
+      </div>
+      <div class="card">
+        <h2>Specifics</h2>
+        @for (entry of objectEntries(itemToView()?.item_obj ?? {}); track entry[0]) {
+          @if (entry[0] == "attributes") {
+            @for (attr of objectEntries(entry[1] ?? {}); track attr[0]) {
+              <div class="field">
+                <label>{{ formatLabel(attr[0]) }}: </label>
+                <span>{{ attr[1] }}</span>
+              </div>
+            }
+          } @else if (entry[0] == 'asset_category') {
+            <div class="field">
+              <label>{{ formatLabel(entry[0]) }}: </label>
+              <span>{{ entry[1]?.name }}</span>
+            </div>
+          } @else {
+            <div class="field">
+              <label>{{ formatLabel(entry[0]) }}: </label>
+              <span>{{ entry[1] }}</span>
+            </div>
+          }
+        }
+      </div>
+      <p-button (click)="contextChange.emit(itemToView()!)">Edit</p-button>
+    </div>
+  }
+</div>

@@ -1,0 +1,56 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# TypeScript compiled output
+dist/
+tmp/
+out-tsc/
+
+# Angular
+.angular/
+bazel-out/
+
+# IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/
+*.sublime-workspace
+*.launch
+.project
+.classpath
+.c9/
+.settings/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Coverage and tests
+coverage/
+__screenshots__/
+
+# Misc
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+
+# Database backups
+backups/
+
+# Logs
+logs/
+*.log

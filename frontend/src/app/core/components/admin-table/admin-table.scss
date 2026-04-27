@@ -1,0 +1,8 @@
+p-toolbar {
+  margin: 1rem 0;
+}
+@media (max-width: 768px) {
+  :host ::ng-deep .p-button .p-button-label {
+    display: none;
+  }
+}
