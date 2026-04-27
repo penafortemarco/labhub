@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class InventoryService {
-  private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'http://192.168.2.61:9334';
 
   constructor(private http: HttpClient) {}
 

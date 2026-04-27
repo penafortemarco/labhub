@@ -4,3 +4,7 @@ CREATE TABLE components (
         quantity INTEGER NOT NULL CHECK (quantity >= 0),
         attributes JSONB NOT NULL DEFAULT '{}'
 );
+
+/*
+  optational PART NUMBER
+  */ 
