@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: 'http://192.168.2.61:4200',
+        origin: 'http://192.168.15.8:4200',
     }),
 );
 

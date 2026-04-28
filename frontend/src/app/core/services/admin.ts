@@ -4,15 +4,15 @@ import { Owner } from '../types/owner';
 import { Room } from '../types/room';
 import { Storage } from '../types/storage';
 import { User } from '../types/user';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-  private apiUrl = 'http://192.168.2.61:9334';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
-
   /*
     Privileged calls for API
   */

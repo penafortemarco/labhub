@@ -72,7 +72,7 @@ export class InventoryTable {
     });
   }
 
-  protected searchQuery = '';
+  protected searchQuery = signal('');
 
   protected tableContent = [
     { label: 'Components', value: 'component' },
@@ -84,10 +84,10 @@ export class InventoryTable {
   );
 
   protected componentTypes = signal<ComponentType[]>([]);
-  protected selectedComponentType = signal<ComponentType | null>(null);
+  protected selectedComponentTypeFilter = signal<ComponentType | null>(null);
 
   protected assetCategories = signal<AssetCategory[]>([]);
-  protected selectedAssetCategory = signal<AssetCategory | null>(null);
+  protected selectedAssetCategoryFilter = signal<AssetCategory | null>(null);
 
   // List of items to display on the table
   protected items = signal<ItemContext[]>([]);
@@ -100,7 +100,7 @@ export class InventoryTable {
   protected itemToEdit = signal<ItemContext | null>(null);
 
   // Signals the ItemDialog if its Edit Mode
-  protected selectedMode = signal<'view' | 'edit'>('edit');
+  protected selectedMode = signal<'view' | 'edit' | 'insert'>('edit');
 
   protected owners = signal<Owner[]>([]); // All owners fetched
   protected rooms = signal<Room[]>([]); //  All rooms fetched
@@ -109,27 +109,35 @@ export class InventoryTable {
   // List of items to display on the table after FILTER (after search implement)
   filteredItems = computed(() => {
     const items = this.items();
+    const searchQuery = this.searchQuery().toLowerCase();
 
     if (this.tableContentOption() === 'component') {
       const componentItems = items as ComponentContext[];
-      const type = this.selectedComponentType();
-      if (!type) return componentItems;
-      return componentItems.filter(
-        (item) => item.item_obj.component_type === type.name,
-      );
-    }
-
-    if (this.tableContentOption() === 'asset') {
+      const type = this.selectedComponentTypeFilter();
+      return componentItems.filter((item) => {
+        const matchesType = !type || item.item_obj.component_type === type.name;
+        const matchesSearch =
+          searchQuery === '' ||
+          item.item_obj.component_type.toLowerCase().includes(searchQuery) ||
+          item.owner?.name.toLowerCase().includes(searchQuery) ||
+          item.room?.name.toLowerCase().includes(searchQuery) ||
+          item.storage?.name.toLowerCase().includes(searchQuery);
+        return matchesType && matchesSearch;
+      });
+    } else if (this.tableContentOption() === 'asset') {
       const assetItems = items as AssetContext[];
-      const category = this.selectedAssetCategory();
+      const category = this.selectedAssetCategoryFilter();
       if (!category) return items;
       return assetItems.filter(
         (item) => item.item_obj.asset_category.name === category.name,
       );
-    }
-
-    if (this.tableContentOption() === 'material') {
-      return items;
+    } else if (this.tableContentOption() === 'material') {
+      const materialItems = items as MaterialContext[];
+      return materialItems.filter(
+        (item) =>
+          searchQuery === '' ||
+          item.item_obj.name.toLowerCase().includes(searchQuery),
+      );
     }
 
     throw Error('Filter does not exist!');
@@ -208,7 +216,7 @@ export class InventoryTable {
         } as MaterialView,
       } as MaterialContext;
     }
-    console.log(payload);
+
     throw new Error(
       'Error at inventory-table.ts buildContext(): No payload.item_type!',
     );

@@ -16,7 +16,7 @@ export async function findByName(name: string): Promise<Owner | null> {
         return result.rows[0] || null;
 }
 
-export async function create(name: string): Promise<Owner | null> {
+export async function createOwner(name: string): Promise<Owner | null> {
         const result = await pool.query('INSERT INTO owners (name) VALUES ($1) RETURNING *', [name]);
         return result.rows[0] || null;
 }

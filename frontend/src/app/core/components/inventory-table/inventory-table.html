@@ -5,7 +5,7 @@
       optionLabel="label"
       optionValue="value"
       [ngModel]="tableContentOption()"
-      (ngModelChange)="this.tableContentOption.set($event); this.fetchItems();"
+      (ngModelChange)="this.tableContentOption.set($event); this.fetchItems()"
       [allowEmpty]="false"
     />
 
@@ -18,20 +18,23 @@
       [breakpoints]="{ '768px': '100vw' }"
     >
       <ng-template #header>
-        <h2>{{ getDialogTitle() | titlecase}}</h2>
+        <h2>{{ getDialogTitle() | titlecase }}</h2>
       </ng-template>
+      @if (itemDialog()) {
         <app-item-dialog
-        [itemToView]="itemToView()"
-        [itemType]="tableContentOption()"
-        [itemToEdit]="itemToEdit()"
-        [mode]="selectedMode()"
-        [owners]="owners()"
-        [rooms]="rooms()"
-        [storages]="storages()"
-        [componentTypes]="componentTypes()"
-        [assetCategories]="assetCategories()"
-        (contextChange)="itemToEdit.set($event); selectedMode.set('edit')"
+          [itemToView]="itemToView()"
+          [itemType]="tableContentOption()"
+          [itemToEdit]="itemToEdit()"
+          [mode]="selectedMode()"
+          [owners]="owners()"
+          [rooms]="rooms()"
+          [storages]="storages()"
+          [componentTypes]="componentTypes()"
+          [assetCategories]="assetCategories()"
+          (contextChange)="itemToEdit.set($event); selectedMode.set('edit')"
+          (submitSuccess)="fetchItems()"
         ></app-item-dialog>
+      }
     </p-dialog>
 
     <p-toolbar>
@@ -40,9 +43,9 @@
           icon="pi pi-plus"
           label="Insert"
           (click)="
-          itemToView.set(null);
-          selectedMode.set('edit');
-          itemDialog.set(true);
+            itemToView.set(null);
+            selectedMode.set('insert');
+            itemDialog.set(true)
           "
         />
       </ng-template>
@@ -52,8 +55,9 @@
           <input
             type="text"
             pInputText
-            placeholder="Search (W.I.P)"
-            [(ngModel)]="searchQuery"
+            placeholder="Search"
+            [ngModel]="searchQuery()"
+            (ngModelChange)="searchQuery.set($event)"
           />
         </p-iconfield>
       </ng-template>
@@ -71,8 +75,8 @@
         @if (tableContentOption() === 'component') {
           <p-select
             [options]="componentTypes()"
-            [ngModel]="selectedComponentType()"
-            (ngModelChange)="selectedComponentType.set($event)"
+            [ngModel]="selectedComponentTypeFilter()"
+            (ngModelChange)="selectedComponentTypeFilter.set($event)"
             optionLabel="name"
             placeholder="Component Type"
             [showClear]="true"
@@ -83,8 +87,8 @@
         @if (tableContentOption() === 'asset') {
           <p-select
             [options]="assetCategories()"
-            [ngModel]="selectedAssetCategory()"
-            (ngModelChange)="selectedAssetCategory.set($event)"
+            [ngModel]="selectedAssetCategoryFilter()"
+            (ngModelChange)="selectedAssetCategoryFilter.set($event)"
             optionLabel="name"
             placeholder="Asset Category"
             [showClear]="true"
@@ -102,7 +106,7 @@
       <ng-template #header>
         <tr>
           <th>Name</th>
-          @if(tableContentOption() === 'component') {
+          @if (tableContentOption() === 'component') {
             <th>Quantity</th>
           } @else if (tableContentOption() === 'asset') {
             <th>Model / Brand</th>
@@ -115,17 +119,23 @@
         <tr
           class="clickable"
           (click)="
-          selectedMode.set('view');
-          itemToView.set(item);
-          itemDialog.set(true);
+            selectedMode.set('view'); itemToView.set(item); itemDialog.set(true)
           "
         >
-          @if(item.item_type === 'component') {
+          @if (item.item_type === 'component') {
             <td>{{ item.item_obj.component_type | titlecase }}</td>
             <td>{{ item.item_obj.quantity }}</td>
           } @else if (item.item_type === 'asset') {
-            <td>{{ item.item_obj.name | titlecase }} ({{ item.item_obj.asset_category.name }})</td>
-            <td>{{ item.item_obj.model | titlecase }} ({{ item.item_obj.brand | titlecase }})</td>
+            <td>
+              {{ item.item_obj.name | titlecase }} ({{
+                item.item_obj.asset_category.name
+              }})
+            </td>
+            <td>
+              {{ item.item_obj.model | titlecase }} ({{
+                item.item_obj.brand | titlecase
+              }})
+            </td>
           } @else {
             <td>{{ item.item_obj.name | titlecase }}</td>
           }

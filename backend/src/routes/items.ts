@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { findAllComponents, insertComponent } from '../repositories/components.repository';
+import {
+    findAllComponents,
+    insertComponent,
+    updateComponent,
+} from '../repositories/components.repository';
 import { findAllAssets } from '../repositories/assets.repository';
 import { findAllMaterials } from '../repositories/materials.repository';
 import { ComponentPayload, ItemPayload } from '../types/item-payload';
@@ -22,16 +26,27 @@ router.get('/materials', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const item = req.body as ItemPayload
-    if(item.item_type === 'component') {
-        await insertComponent(item as ComponentPayload)
+    const item = req.body as ItemPayload;
+    if (item.item_type === 'component') {
+        await insertComponent(item as ComponentPayload);
         res.status(201).json({ message: 'Component created' });
-    } else if(item.item_type === 'asset') {
-
-    } else if(item.item_type === 'material') {
-
+    } else if (item.item_type === 'asset') {
+    } else if (item.item_type === 'material') {
     } else {
-        res.json({ error: "error" })
+        res.json({ error: 'Invalid item.item_type' });
+    }
+});
+
+router.patch('/:id', async (req, res) => {
+    const item = req.body as ItemPayload;
+
+    if (item.item_type === 'component') {
+        await updateComponent(item as ComponentPayload);
+        res.status(201).json({ message: 'Component updated' });
+    } else if (item.item_type === 'asset') {
+    } else if (item.item_type === 'material') {
+    } else {
+        res.json({ error: 'Invalid item.item_type' });
     }
 });
 

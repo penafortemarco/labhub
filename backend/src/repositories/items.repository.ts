@@ -11,3 +11,15 @@ export async function createItem(
     );
     return result.rows[0] || null;
 }
+
+export async function updateItem(
+    item_id: number,
+    storage_id: number | null,
+    owner_id: number | null,
+): Promise<Item | null> {
+    const result = await pool.query(
+        'UPDATE items SET storage_id = COALESCE($1, storage_id), owner_id = COALESCE($2, owner_id) WHERE id = $3',
+        [storage_id, owner_id, item_id],
+    );
+    return result.rows[0] || null;
+}

@@ -1,5 +1,50 @@
 <div class="dialog">
-  @if (mode() === 'edit') {
+  @if (mode() === 'view') {
+    <div class="view-fields">
+      <div class="card">
+        <h2>Location</h2>
+        <div class="field">
+          <label>Owner: </label>
+          <span>{{ itemToView()?.owner?.name }}</span>
+        </div>
+        <div class="field">
+          <label>Room: </label>
+          <span>{{ itemToView()?.room?.name }}</span>
+        </div>
+        <div class="field">
+          <label>Storage: </label>
+          <span>{{ itemToView()?.storage?.name }}</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Specifics</h2>
+        @for (
+          entry of objectEntries(itemToView()?.item_obj ?? {});
+          track entry[0]
+        ) {
+          @if (entry[0] == 'attributes') {
+            @for (attr of objectEntries(entry[1] ?? {}); track attr[0]) {
+              <div class="field">
+                <label>{{ formatLabel(attr[0]) }}: </label>
+                <span>{{ attr[1] }}</span>
+              </div>
+            }
+          } @else if (entry[0] == 'asset_category') {
+            <div class="field">
+              <label>{{ formatLabel(entry[0]) }}: </label>
+              <span>{{ entry[1]?.name }}</span>
+            </div>
+          } @else {
+            <div class="field">
+              <label>{{ formatLabel(entry[0]) }}: </label>
+              <span>{{ entry[1] }}</span>
+            </div>
+          }
+        }
+      </div>
+      <p-button (click)="contextChange.emit(itemToView()!)">Edit</p-button>
+    </div>
+  } @else {
     <form [formGroup]="form" class="form-group" (ngSubmit)="onSubmit()">
       <div class="input-row">
         <p-select
@@ -50,7 +95,9 @@
           ></p-input-number>
           <div class="fields" formGroupName="attributes">
             @for (
-              entry of objectEntries(form.get('item_obj.component_type')?.value?.fields ?? {});
+              entry of objectEntries(
+                form.get('item_obj.component_type')?.value?.fields ?? {}
+              );
               track entry[0]
             ) {
               <p-floatlabel class="field-input">
@@ -59,7 +106,10 @@
                     pInputText
                     [id]="entry[0]"
                     [formControlName]="entry[0]"
-                    [invalid]="form.get('item_obj.attributes.' + entry[0])?.invalid && form.get('item_obj.attributes.' + entry[0])?.touched"
+                    [invalid]="
+                      form.get('item_obj.attributes.' + entry[0])?.invalid &&
+                      form.get('item_obj.attributes.' + entry[0])?.touched
+                    "
                   />
                 } @else {
                   <input
@@ -78,49 +128,17 @@
       } @else {
         <span>W.I.P</span>
       }
-      <p-button type="submit">Submit</p-button>
-    </form>
-  } @else {
-    <div class="view-fields">
-      <div class="card">
-        <h2>Location</h2>
-        <div class="field">
-           <label>Owner: </label>
-           <span>{{ itemToView()?.owner?.name }}</span>
-         </div>
-         <div class="field">
-           <label>Room: </label>
-           <span>{{ itemToView()?.room?.name }}</span>
-         </div>
-         <div class="field">
-           <label>Storage: </label>
-           <span>{{ itemToView()?.storage?.name }}</span>
-         </div>
-      </div>
-      <div class="card">
-        <h2>Specifics</h2>
-        @for (entry of objectEntries(itemToView()?.item_obj ?? {}); track entry[0]) {
-          @if (entry[0] == "attributes") {
-            @for (attr of objectEntries(entry[1] ?? {}); track attr[0]) {
-              <div class="field">
-                <label>{{ formatLabel(attr[0]) }}: </label>
-                <span>{{ attr[1] }}</span>
-              </div>
-            }
-          } @else if (entry[0] == 'asset_category') {
-            <div class="field">
-              <label>{{ formatLabel(entry[0]) }}: </label>
-              <span>{{ entry[1]?.name }}</span>
-            </div>
-          } @else {
-            <div class="field">
-              <label>{{ formatLabel(entry[0]) }}: </label>
-              <span>{{ entry[1] }}</span>
-            </div>
-          }
+      <div class="submit-row">
+        <p-button type="submit" [loading]="submitStatus() === 'loading'"
+          >Submit</p-button
+        >
+        @if (submitStatus() === 'success') {
+          <span class="success">✓ Saved</span>
+        }
+        @if (submitStatus() === 'error') {
+          <span class="error">✗ Error</span>
         }
       </div>
-      <p-button (click)="contextChange.emit(itemToView()!)">Edit</p-button>
-    </div>
+    </form>
   }
 </div>

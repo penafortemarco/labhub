@@ -6,26 +6,30 @@ import { Owner } from '../types/owner';
 import { Room } from '../types/room';
 import { Storage } from '../types/storage';
 import {
-  AssetPayload,
-  ComponentPayload,
   ItemPayload,
+  ComponentPayload,
+  AssetPayload,
   MaterialPayload,
 } from '../types/item-payload';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InventoryService {
-  private apiUrl = 'http://192.168.2.61:9334';
+    private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   getInventory(category: string): Observable<ItemPayload[]> {
-    if (category === 'component') return this.getComponents();
-    if (category === 'asset') return this.getAssets();
-    if (category === 'material') return this.getMaterials();
-    else throw Error('Invalid Category!');
+    if (category === 'component')
+      return this.getComponents() as Observable<ItemPayload[]>;
+    if (category === 'asset')
+      return this.getAssets() as Observable<ItemPayload[]>;
+    if (category === 'material')
+      return this.getMaterials() as Observable<ItemPayload[]>;
+    throw Error('Invalid Category!');
   }
 
   getComponents() {
@@ -60,7 +64,14 @@ export class InventoryService {
     return this.http.get<Storage[]>(`${this.apiUrl}/storages`);
   }
 
-  postNewItem(item: ItemPayload) {
-    return this.http.post<ItemPayload[]>(`${this.apiUrl}/items`, item);
+  createItem(item: ItemPayload) {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/items`, item);
+  }
+
+  updateItem(item: ItemPayload) {
+    return this.http.patch<{ message: string }>(
+      `${this.apiUrl}/items/${item.item_id}`,
+      item,
+    );
   }
 }

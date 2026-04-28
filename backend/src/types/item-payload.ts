@@ -6,30 +6,30 @@ export type MaterialPayload = Extract<ItemPayload, { item_type: 'material' }>;
 
 export type ItemPayload =
     | {
-          item_id: number | null;
-          item_type: 'component';
-          owner_id: number;
-          storage_id: number;
-          component_type_id: number;
-          quantity: number;
-          attributes: Record<string, any>;
+        item_id: number | null;
+        item_type: 'component';
+        owner_id: number | null;
+        storage_id: number | null;
+        component_type_id: number | null;
+        quantity: number | null;
+        attributes: Record<string, any> | null;
       }
     | {
-          item_id: number | null;
-          item_type: 'asset';
-          owner_id: number;
-          storage_id: number;
-          asset_category_id: number;
-          name: string;
-          status: AssetStatus;
-          brand?: string;
-          model?: string;
-          serial_number?: string;
+        item_id: number | null;
+        item_type: 'asset';
+        owner_id: number | null;
+        storage_id: number | null;
+        asset_category_id: number | null;
+        name: string | null;
+        status: AssetStatus | null;
+        brand?: string | null;
+        model?: string | null;
+        serial_number?: string | null;
       }
     | {
-          item_id: number | null;
-          item_type: 'material';
-          owner_id: number;
-          storage_id: number;
-          name: string;
+        item_id: number | null;
+        item_type: 'material';
+        owner_id: number | null;
+        storage_id: number | null;
+        name: string | null;
       };

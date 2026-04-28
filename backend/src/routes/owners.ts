@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findAll, findById, findByName, create } from "../repositories/owners.repository";
+import { findAll, findById, findByName, createOwner } from "../repositories/owners.repository";
 import { authenticate } from "../middleware/authenticate.middleware";
 import { authorize } from "../middleware/authorize.middleware";
 
@@ -31,13 +31,12 @@ router.get('/:id', async (req, res) => {
 // Protected Routes
 router.post('/', authorize(['admin']), async (req, res) => {
         const { name } = req.body;
-        const result = await create(name);
+        const result = await createOwner(name);
         if (!result) {
                 res.status(404).json({ error: 'Not found' });
                 return;
         }
         res.json(result);
 });
-
 
 export default router;
